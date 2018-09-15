@@ -39,6 +39,20 @@ public class SchedulingExecutorTest {
     }
 
     @Test
+    public void shouldNotSleepTest() throws InterruptedException {
+        int count = 5;
+        CountDownLatch l = new CountDownLatch(count);
+        SchedulingExecutor systemUnderTest = new SchedulingExecutor(1);
+        for (int ii = 0; ii < count; ii++) {
+            systemUnderTest.submit(LocalDateTime.now().minusMinutes(1), () -> {
+                l.countDown();
+                return null;
+            });
+        }
+        l.await(1, TimeUnit.SECONDS);
+    }
+
+    @Test
     public void yieldLoopTest() throws InterruptedException {
         LocalDateTime stubNow = LocalDateTime.now();
         CountDownLatch l = new CountDownLatch(1);

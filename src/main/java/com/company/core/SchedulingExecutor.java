@@ -41,8 +41,7 @@ public class SchedulingExecutor {
             while (!pool.isShutdown()) {
                 PrioritizedTask task = timeBasedPriorityQueue.take();
                 if (LocalDateTime.now().compareTo(task.getDateTime()) <= 0) {
-                    long tts = Math.abs(ChronoUnit.MILLIS.between(task.getDateTime(), LocalDateTime.now()));
-                    Thread.sleep(tts);
+                    Thread.sleep(ChronoUnit.MILLIS.between(task.getDateTime(), LocalDateTime.now()));
                 }
                 while (LocalDateTime.now().compareTo(task.getDateTime()) <= 0) {
                     Thread.yield();//be on standby in case we have to wait for some microseconds
@@ -53,6 +52,9 @@ public class SchedulingExecutor {
         }
     }
 
+    /**
+     * Initiates internal pool shutdown.
+     */
     public void terminate() {
         pool.shutdownNow();
     }
